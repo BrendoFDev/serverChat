@@ -8,7 +8,7 @@ module.exports = (io) => {
         chat(io,socket);
     
         socket.on('disconnect', ()=>{
-            console.log("cliente disconectado");
+            console.log("cliente desconectado");
         });
     
     });

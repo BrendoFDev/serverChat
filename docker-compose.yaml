@@ -1,0 +1,54 @@
+services:
+    chatserver:
+      build:
+        context: .
+        dockerfile: dockerfile
+
+      restart: always
+      container_name: chatserver
+      networks:
+        - private
+        - public
+      ports: 
+        - "3000:3000"
+      depends_on:
+        - postgresql
+
+    postgresql:
+      image: postgres:17.2
+      restart: always
+      container_name: dbserver
+      environment:
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_USER: postgres
+      networks:
+        - private
+      ports:
+        - "5432:5432"
+      volumes:
+       - postgres:/var/lib/postgresql/data
+    
+    pgadmin:
+      image: dpage/pgadmin4:8.4
+      restart: always
+      container_name: pgadminserver
+      ports: 
+       - "8080:80"
+      environment:
+        PGADMIN_DEFAULT_EMAIL: brendo.dkry@gmail.com 
+        PGADMIN_DEFAULT_PASSWORD: postgres
+
+      networks:
+      - private
+
+volumes:
+  postgres: 
+
+networks:
+  private: 
+  public:
+
+
+
+
+      

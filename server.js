@@ -1,5 +1,6 @@
 const express = require('express');
 const router = require('./router');
+const cors = require('cors');
 
 const {createServer} = require('http')
 const { Server} = require("socket.io");
@@ -8,9 +9,15 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
 
+
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, { /* options */ });
+const io = new Server(httpServer, { cors:
+    {
+        origin: 'http://localhost:9091',
+        methods: ['GET', 'POST']
+    }
+});
 
 router(io)
 
