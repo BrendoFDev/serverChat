@@ -12,11 +12,12 @@ const PORT = process.env.SERVER_PORT || 3000;
 
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, { cors:
-    {
-        origin: 'http://localhost:9091',
-        methods: ['GET', 'POST']
-    }
+const io = new Server(httpServer, {   cors: {
+    origin: "http://localhost:9091", // Permite todos os domínios
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+}
 });
 
 router(io)
