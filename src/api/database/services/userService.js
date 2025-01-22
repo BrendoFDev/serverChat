@@ -1,9 +1,16 @@
-const user = require('../models/userModel')
-    exports.createUser =  async (req,res) => {
+const user = require('../../model/userModel');
 
+    exports.createUser =  async (req,res) => {
         try{
-            let body = req.body;
-            await user.create({name: body.Name, email: body.Email, password: body.Password});
+            const{Name,Email,Password} = req.body;
+
+            if(await userExists(Email))
+            {
+                res.status(201).json({ message:`Já existe usuário cadastrado com o email ${Email}`});
+                return;
+            }
+
+            await user.create({name: Name, email: Email, password: Password});
             return res.status(200).json({ message:"Usuário criado com sucesso"});
         }
         catch(Exception){
@@ -12,11 +19,24 @@ const user = require('../models/userModel')
         }
     }
 
+    async function userExists(userEmail){
+        const currentUser = await user.findOne({
+            where:{
+                email:userEmail
+            }
+        })
+
+        if(currentUser)
+            return true;
+        else
+            return false;
+    }
+
     exports.userLogin = async (req, res) => {
         try{
             const {Email, Password} = req.body;
             const currentUser = await getUser(Email,Password);
-
+           
             if(currentUser){
 
                 req.session.user = {

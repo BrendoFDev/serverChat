@@ -1,11 +1,13 @@
-const room = require('./routes/room');
-const chat = require('./routes/chat');
+const room = require('./events/room');
+const chat = require('./events/chat');
+const user = require('./events/user');
 
 module.exports = (io) => {
     io.on("connection", (socket) => {
         
-        console.log("Novo Client conectado: ",socket.id)
+        console.log("Novo Client tentando se conectar: ",socket.id)
         
+        user(socket)
         room(socket);
         chat(io,socket);
     
@@ -14,9 +16,7 @@ module.exports = (io) => {
         });
 
         socket.on('disconnect', (reason)=>{
-            console.log("cliente desconectado");
-            console.log(reason.details)
-            console.log(reason.description)
+            console.log("cliente desconectado: ", socket.id);
         });
     
     });

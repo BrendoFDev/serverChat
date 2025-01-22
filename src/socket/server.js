@@ -1,9 +1,10 @@
 
 const {createServer} = require('http');
 const { Server} = require("socket.io");
+const router = require('./router');
 require('dotenv').config(); 
 
-const startSocketServer = (app) => {
+const startSocketServer = (app, sessionConfig) => {
     const socketPort = process.env.SOCKET_PORT || 3000;
 
     const httpServer = createServer(app);
@@ -16,8 +17,12 @@ const startSocketServer = (app) => {
             credentials: true,
         },
     });
-   
-    routerSocket(io);
+    
+    io.use((socket,next)=>{
+        sessionConfig(socket.request, {}, next);
+    });
+    
+    router(io);
     
     httpServer.listen(socketPort, () => {
         console.log(`Servidor SOCKET rodando em http://localhost:${socketPort}`);
