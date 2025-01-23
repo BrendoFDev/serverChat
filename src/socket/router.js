@@ -5,7 +5,7 @@ const user = require('./events/user');
 module.exports = (io) => {
     io.on("connection", (socket) => {
         
-        console.log("Novo Client tentando se conectar: ",socket.id)
+        console.log("Novo Client tentando se conectar: ",socket.id, " - ", socket.handshake.headers.cookie)
         
         user(socket)
         room(socket);

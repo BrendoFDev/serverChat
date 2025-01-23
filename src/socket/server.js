@@ -2,6 +2,8 @@
 const {createServer} = require('http');
 const { Server } = require("socket.io");
 const router = require('./router');
+const sharedSession = require('express-socket.io-session');
+
 require('dotenv').config(); 
 
 const startSocketServer = (app, sessionConfig) => {
@@ -18,9 +20,10 @@ const startSocketServer = (app, sessionConfig) => {
         },
     });
     
-    io.use((socket,next)=>{
-        sessionConfig(socket.request, {}, next);
-    });
+    io.use(sharedSession(sessionConfig, {
+            autoSave:true,
+        })
+    );
     
     router(io);
     
