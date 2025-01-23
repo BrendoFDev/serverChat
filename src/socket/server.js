@@ -6,11 +6,11 @@ const sharedSession = require('express-socket.io-session');
 
 require('dotenv').config(); 
 
-const startSocketServer = (app, sessionConfig) => {
+const startSocketServer = (app, session) => {
     const socketPort = process.env.SOCKET_PORT || 3000;
 
     const httpServer = createServer(app);
-
+    
     const io = new Server(httpServer, {
         cors: {
             origin: "http://localhost:9091",
@@ -20,9 +20,9 @@ const startSocketServer = (app, sessionConfig) => {
         },
     });
     
-    io.use(sharedSession(sessionConfig, {
+    io.use(sharedSession(session, {
             autoSave:true,
-        })
+        }),
     );
     
     router(io);

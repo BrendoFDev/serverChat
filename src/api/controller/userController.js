@@ -11,7 +11,9 @@ exports.createUser = async (req,res)=>{
 
 exports.login = async (req,res) => {
    try{
-      return await userService.userLogin(req,res);
+      const response = await userService.userLogin(req,res);
+      
+      return response;
    }
    catch(error){
       console.log(error)

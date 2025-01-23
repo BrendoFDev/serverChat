@@ -5,8 +5,8 @@ const user = require('./events/user');
 module.exports = (io) => {
     io.on("connection", (socket) => {
         
-        console.log("Novo Client tentando se conectar: ",socket.id, " - ", socket.handshake.headers.cookie)
-        
+        console.log('Novo socket conectado: ', socket.id, ' - ', socket.handshake.session)
+
         user(socket)
         room(socket);
         chat(io,socket);

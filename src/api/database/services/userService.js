@@ -35,6 +35,7 @@ const user = require('../../model/userModel');
     exports.userLogin = async (req, res) => {
         try{
             const {Email, Password} = req.body;
+            console.log(req.body)
             const currentUser = await getUser(Email,Password);
            
             if(currentUser){
@@ -45,7 +46,7 @@ const user = require('../../model/userModel');
                 };
             
                 await saveSession(req);
-                return res.status(200).json({ message:'Usuário encontrado', data: currentUser});
+                return res.status(200).json({ message:'Usuário encontrado', user: currentUser});
             }
             else
                 return res.status(200).json({ message:'Usuário não encontrado'});
@@ -70,13 +71,14 @@ const user = require('../../model/userModel');
         }
         catch(error){
             console.log(error);
-            return res.status(200).json({ message:'Erro ao logar'});
+            return ({status: 200, message:'Erro ao logar'});
         }   
     }
 
     function saveSession(req){
         return new Promise((resolve,reject)=>{
         req.session.save((err) => {
+            console.log('Cookie gerado:', req.sessionID);
             if (err) {
                 console.log('Erro ao salvar a sessão:', err);
                 return reject(err)
