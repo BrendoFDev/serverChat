@@ -1,6 +1,6 @@
 
 const {createServer} = require('http');
-const { Server} = require("socket.io");
+const { Server } = require("socket.io");
 const router = require('./router');
 require('dotenv').config(); 
 
@@ -13,7 +13,7 @@ const startSocketServer = (app, sessionConfig) => {
         cors: {
             origin: "http://localhost:9091",
             methods: ["GET", "POST"],
-            allowedHeaders: ["my-custom-header"],
+            allowedHeaders: ['Content-Type', 'Authorization'],
             credentials: true,
         },
     });

@@ -1,54 +1,49 @@
 services:
-    chatserver:
-      build:
-        context: .
-        dockerfile: dockerfile
+  chatserver:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: chatserver
+    restart: always
+    depends_on:
+      - postgresql
+    networks:
+      - private
+      - public
+    ports: 
+      - "3000:3000"  # Porta do servidor Express
+      - "3001:3001"  # Porta do servidor WebSocket
 
-      restart: always
-      container_name: chatserver
-      networks:
-        - private
-        - public
-      ports: 
-        - "3000:3000"
-      depends_on:
-        - postgresql
+  postgresql:
+    image: postgres:latest
+    restart: always
+    container_name: dbserver
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - private
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresv:/var/lib/postgresql/data
 
-    postgresql:
-      image: postgres:17.2
-      restart: always
-      container_name: dbserver
-      environment:
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_USER: postgres
-      networks:
-        - private
-      ports:
-        - "5432:5432"
-      volumes:
-       - postgres:/var/lib/postgresql/data
-    
-    pgadmin:
-      image: dpage/pgadmin4:8.4
-      restart: always
-      container_name: pgadminserver
-      ports: 
-       - "8080:80"
-      environment:
-        PGADMIN_DEFAULT_EMAIL: brendo.dkry@gmail.com 
-        PGADMIN_DEFAULT_PASSWORD: postgres
-
-      networks:
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    container_name: pgadminserver
+    ports: 
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: brendo.dkry@gmail.com 
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    networks:
       - private
 
 volumes:
-  postgres: 
+  postgresv: 
 
 networks:
   private: 
   public:
-
-
-
-
-      
