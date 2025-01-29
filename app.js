@@ -3,7 +3,7 @@ const { startSocketServer } = require('./src/socket/server');
 
 (async function startServers(){
 
-    const {app, session} = await startExpressServer();
+    const appExpress = await startExpressServer();
 
-    startSocketServer(app, session);
+    startSocketServer(appExpress);
 })();

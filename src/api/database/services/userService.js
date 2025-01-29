@@ -35,12 +35,11 @@ const user = require('../../model/userModel');
     exports.userLogin = async (req, res) => {
         try{
             const {Email, Password} = req.body;
-            console.log(req.body)
             const currentUser = await getUser(Email,Password);
            
             if(currentUser){
-
                 req.session.user = {
+                    id: currentUser.id,
                     name:currentUser.name,
                     email:currentUser.email
                 };

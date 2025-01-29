@@ -1,9 +1,9 @@
-module.exports = (socket)=>{
+module.exports = async (socket)=>{
 
     socket.on('connection', (user)=>{
 
         const userSession = user;
-        console.log(user)
+        
         if (userSession) {
             console.log(`Usuário autenticado: ${userSession.email}`);
         } else {
@@ -12,4 +12,5 @@ module.exports = (socket)=>{
             return socket.disconnect(true);
         }
     });
+
 }
