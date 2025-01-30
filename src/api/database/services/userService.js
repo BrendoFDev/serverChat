@@ -1,89 +1,81 @@
 const user = require('../../model/userModel');
+const bcrypt = require('bcryptjs')
+require('dotenv').config();
 
-    exports.createUser =  async (req,res) => {
-        try{
-            const{Name,Email,Password} = req.body;
+const JWT_SECRET = process.env.JWT_SECRET
+const SALT_ROUNDS = 10;
+const jwt = require('jsonwebtoken');
 
-            if(await userExists(Email))
-            {
-                res.status(201).json({ message:`Já existe usuário cadastrado com o email ${Email}`});
-                return;
-            }
 
-            await user.create({name: Name, email: Email, password: Password});
-            return res.status(200).json({ message:"Usuário criado com sucesso"});
-        }
-        catch(Exception){
-            console.log(Exception)
-            return res.status(400).json({ message:'Erro ao criar usuário'});
-        }
+exports.createUser = async (req, res) => {
+    try {
+        const { Name, Email, Password } = req.body;
+
+        if (await checkUserByEmail(Email))
+            return res.status(409).json({ message: `Já existe usuário cadastrado com o email ${Email}` });
+        
+        const hashedPassword = await hashPassword(Password);
+        
+        await user.create({ name: Name, email: Email, password: hashedPassword });
+
+        return res.status(200).json({ message: "Usuário criado com sucesso" });
     }
-
-    async function userExists(userEmail){
-        const currentUser = await user.findOne({
-            where:{
-                email:userEmail
-            }
-        })
-
-        if(currentUser)
-            return true;
-        else
-            return false;
+    catch (Exception) {
+        console.log(Exception)
+        return res.status(500).json({ message: 'Erro ao criar usuário' });
     }
+}
 
-    exports.userLogin = async (req, res) => {
-        try{
-            const {Email, Password} = req.body;
-            const currentUser = await getUser(Email,Password);
-           
-            if(currentUser){
-                req.session.user = {
-                    id: currentUser.id,
-                    name:currentUser.name,
-                    email:currentUser.email
-                };
-            
-                await saveSession(req);
-                return res.status(200).json({ message:'Usuário encontrado', user: currentUser});
-            }
-            else
-                return res.status(200).json({ message:'Usuário não encontrado'});
-            
+async function hashPassword(password) {
+    return await bcrypt.hash(password, SALT_ROUNDS);
+}
+
+async function checkUserByEmail(userEmail) {
+    const currentUser = await user.findOne({
+        where: {
+            email: userEmail
         }
-        catch(error){
-            console.log(error);
-            return  res.status(200).json({ message:'Erro ao logar'});
-        }
-    }
-
-    async function getUser(Email, Password){
-        try{
-            let currentUser = await user.findOne({
-                where:{
-                    "email":Email,
-                    "password":Password
-                }
-            });
-
-            return currentUser;
-        }
-        catch(error){
-            console.log(error);
-            return ({status: 200, message:'Erro ao logar'});
-        }   
-    }
-
-    function saveSession(req){
-        return new Promise((resolve,reject)=>{
-        req.session.save((err) => {
-            console.log('Cookie gerado:', req.sessionID);
-            if (err) {
-                console.log('Erro ao salvar a sessão:', err);
-                return reject(err)
-            }
-            resolve();
-        });
     });
+    return currentUser;
+}
 
+exports.userLogin = async (req, res) => {
+    try {
+
+        const { Email, Password } = req.body;
+        const currentUser = await checkUserByEmail(Email);
+
+        if(!currentUser)
+            return res.status(500).json({ message: 'Email não cadastrado!' });
+
+        const validPassword = await bcrypt.compare(Password, currentUser.password);
+
+        if(!validPassword)
+            return res.status(500).json({ message: 'Senha inválida!' });
+
+        const token = jwt.sign(
+            { 
+                id: currentUser.id,
+                email: currentUser.email 
+            }, 
+            JWT_SECRET, 
+            { expiresIn: '1h' }
+        );
+            
+                
+        return res.status(200).json({ 
+            message: 'Login bem-sucedido',
+            token,
+            user: {
+                id: currentUser.id,
+                name: currentUser.name,
+                email: currentUser.email
+            }
+        });
+        
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(200).json({ message: 'Erro ao logar' });
+    }
 }

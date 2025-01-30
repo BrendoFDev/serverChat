@@ -1,14 +1,10 @@
 const room = require('./events/room');
 const chat = require('./events/chat');
-const user = require('./events/user');
 
 module.exports = (io) => {
     io.on("connection", async (socket) => {
         
-        console.log('Novo socket conectado: ', socket.id, ' - ', socket.request.session);
-        console.log('Dados da sessão:', socket.session);
-   
-        user(socket)
+        console.log('Novo socket conectado: ', socket.id);
         room(socket);
         chat(io,socket);
     
