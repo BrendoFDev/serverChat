@@ -13,8 +13,8 @@ const startSocketServer = (app) => {
         cors: {
             origin: 'http://localhost:9091',
             methods: ['GET', 'POST', 'PUT', 'DELETE'], 
-            allowedHeaders: ['Content-Type', 'Authorization'],
-            credentials:true,
+            allowedHeaders: ['Content-Type', 'Authorization','token'],
+            //credentials:true,
         },
     });
     

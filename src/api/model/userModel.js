@@ -1,6 +1,7 @@
 const sequelize = require('../database/db')
 const { DataTypes } = require('sequelize');
-
+const bcryptjs = require('bcryptjs');
+const salt = process.env.PASSWORD_HASH_SALT;
 const user = sequelize.define('user', {
     id:{
         autoIncrement:true,
@@ -15,9 +16,14 @@ const user = sequelize.define('user', {
         type: DataTypes.STRING,
         allowNull: false,
         unique:true,
+        validate:{
+            isEmail:{
+                msg: 'Email Inválido'
+            }
+        }
     },
     password:{
-        type:DataTypes.STRING,
+        type: DataTypes.STRING,
         allowNull:false
     }
 }, 
