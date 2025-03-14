@@ -10,7 +10,7 @@ const app = express();
 app.use(cors({
     origin: 'http://localhost:9091',
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
-    allowedHeaders: ['Content-Type', 'Authorization', 'token'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token', 'refresh'],
     credentials:true,
 }));
 
