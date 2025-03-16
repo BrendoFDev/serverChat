@@ -1,8 +1,7 @@
 const sequelize = require('../database/db')
 const { DataTypes } = require('sequelize');
-const bcryptjs = require('bcryptjs');
-const salt = process.env.PASSWORD_HASH_SALT;
-const user = sequelize.define('user', {
+
+const User = sequelize.define('user', {
     id:{
         autoIncrement:true,
         primaryKey:true,
@@ -32,4 +31,17 @@ const user = sequelize.define('user', {
     timestamps:true
 });
 
-module.exports = user;
+User.findByEmail = async (email) => {
+    try {
+        return await User.findOne({
+            where: {
+                email
+            },
+            attributes: ['name', 'email']
+        });
+    } catch (err) {
+        throw new Error('Erro interno do servidor')
+    }
+}
+
+module.exports = User;
