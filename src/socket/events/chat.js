@@ -1,8 +1,19 @@
+const redisService = require('../../api/services/redisService');
+
 module.exports = (io, socket) => {
+    try {
+        socket.on("private_message", (data) => {
+            ({ roomId, message, sender, date, time} = data);
 
-    socket.on("private_message",(data)=>{
+            console.log(`Mensagem recebida na sala ${roomId}`);
 
-        console.log(`Mensagem recebida na sala ${data.roomId}`);
-        io.to(data.roomId).emit("receive_message",{message:data.message, sender: data.userName});
-    });
+            let formatedMsg = {sender, message, date, time};
+
+            redisService.SaveMessage(roomId, formatedMsg);
+            io.to(data.roomId).emit("receive_message", { formatedMsg });
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
