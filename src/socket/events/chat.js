@@ -10,10 +10,16 @@ module.exports = (io, socket) => {
             let formatedMsg = {sender, message, date, time};
 
             redisService.SaveMessage(roomId, formatedMsg);
-            io.to(data.roomId).emit("receive_message", { formatedMsg });
+            io.to(data.roomId).emit("receive_message",  formatedMsg );
         });
+
+        socket.on('load_room_messages', async (roomId)=>{
+            messages = await redisService.SearchMessages(roomId);
+            console.log('Menssagens carregadas');
+            socket.emit('return_room_messages', messages);
+        })
     }
     catch (err) {
-        console.log(err);
+        socket.emit('error', err);
     }
 }
