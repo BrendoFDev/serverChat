@@ -1,7 +1,8 @@
 const sequelize = require('../database/db')
 const { DataTypes } = require('sequelize');
+const User = require('./userModel');
 
-const User = sequelize.define('user', {
+const Room = sequelize.define('room', {
     id:{
         autoIncrement:true,
         primaryKey:true,
@@ -11,25 +12,24 @@ const User = sequelize.define('user', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    email:{
+    code:{
         type: DataTypes.STRING,
         allowNull: false,
-        unique:true,
-        validate:{
-            isEmail:{
-                msg: 'Email Inválido'
-            }
-        }
     },
-    password:{
-        type: DataTypes.STRING,
+    creationDate:{
+        type: DataTypes.DATE,
         allowNull:false
+    },
+    owner: {
+        type: DataTypes.INTEGER,
+        allowNull:false,
     }
 }, 
 {
-    tableName:'user',
-    timestamps:true
+    tableName:'room',
+    timestamps:false,
 });
 
+Room.belongsTo(User, { foreignKey:'owner', targetKey:'id' });
 
-module.exports = User;
+module.exports = Room;

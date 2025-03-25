@@ -32,11 +32,11 @@ exports.userLogin = async (req, res) => {
 
         const { email, password } = req.body;
 
-        const currentUser = await User.findOne({where:{ email }, attributes:['email','password']});
+        const currentUser = await User.findOne({where:{ email }, attributes:['email','name','password']});
 
         if (!currentUser)
             return res.status(500).json({ message: 'Email não cadastrado!' });
-
+        
         const validPassword = await bcrypt.compare(password, currentUser.password);
         
         if (!validPassword)
@@ -47,7 +47,8 @@ exports.userLogin = async (req, res) => {
         return res.status(200).json({
             message: 'Login bem-sucedido',
             token,
-            refresh
+            refresh,
+            user: {name: currentUser.name, email: currentUser.email}
         });
 
     }

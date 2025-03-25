@@ -10,7 +10,7 @@ const startSocketServer = (app) => {
     
     const io = new Server(httpServer, {
         cors: {
-            origin: 'http://localhost:9091',
+            origin: '*',
             methods: ['GET', 'POST', 'PUT', 'DELETE'], 
             allowedHeaders: ['Content-Type', 'Authorization']
         },

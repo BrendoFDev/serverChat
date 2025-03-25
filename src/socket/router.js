@@ -15,6 +15,5 @@ module.exports = (io) => {
         socket.on('disconnect', (reason)=>{
             console.log("cliente desconectado: ", socket.id);
         });
-    
     });
 }
