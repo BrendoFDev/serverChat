@@ -32,8 +32,7 @@ exports.userLogin = async (req, res) => {
 
         const { email, password } = req.body;
 
-        const currentUser = await User.findOne({where:{ email }, attributes:['email','name','password']});
-
+        const currentUser = await User.findOne({where:{ email }, attributes:['id','email','name','password']});
         if (!currentUser)
             return res.status(500).json({ message: 'Email não cadastrado!' });
         
@@ -48,7 +47,7 @@ exports.userLogin = async (req, res) => {
             message: 'Login bem-sucedido',
             token,
             refresh,
-            user: {name: currentUser.name, email: currentUser.email}
+            user: {id: currentUser.id,name: currentUser.name, email: currentUser.email}
         });
 
     }

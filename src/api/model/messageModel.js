@@ -8,15 +8,15 @@ const Message = sequelize.define('message', {
         primaryKey:true,
         type: DataTypes.INTEGER,
     },
-    senderId:{
-        type: DataTypes.STRING,
+    sender:{
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     message:{
         type: DataTypes.STRING,
         allowNull: false,
     },
-    roomId:{
+    room:{
         type: DataTypes.INTEGER,
         allowNull:false,
     },
