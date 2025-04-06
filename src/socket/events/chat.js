@@ -1,6 +1,5 @@
 const messageService = require('../../api/services/messageService');
 const Message = require('../../api/model/messageModel');
-const User = require('../../api/model/userModel');
 const { format } = require('date-fns');
 
 module.exports = async (io, socket) => {

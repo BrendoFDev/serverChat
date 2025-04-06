@@ -3,7 +3,6 @@ const Room = require('../../api/model/roomModel');
 
 module.exports = (io, socket) => {
     try {
-
         socket.on("join_private_room", async (data) => {
             try {
                 const roomData = { name:data.roomName, code:'code', creationDate: Date.now(), owner: data.userId };
