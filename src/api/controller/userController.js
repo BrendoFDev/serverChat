@@ -18,3 +18,13 @@ exports.login = async (req,res) => {
       res.status(500).json({message: "Erro ao logar usuário"});
    }
 }
+
+exports.getUser = async (req,res) =>{
+   try{
+      return await userService.getUser(req, res);
+   }
+   catch(err){
+      console.log(error)
+      res.status(500).json({message: "Erro ao resgatar usuário"});
+   }
+}

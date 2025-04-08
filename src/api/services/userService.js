@@ -56,3 +56,21 @@ exports.userLogin = async (req, res) => {
         return res.status(200).json({ message: 'Erro ao logar' });
     }
 }
+
+exports.getUser = async (req, res)=>{
+    try {
+        const tokenUser = req.user;
+        const user = User.findOne({
+            where:{
+                email: tokenUser.email
+            },
+            attributes: ["name", "email"],
+        });
+        
+        return res.status(200).json({user});
+    }
+    catch (Exception) {
+        console.log(Exception)
+        return res.status(500).json({ message: 'Erro ao criar usuário' });
+    }
+}
