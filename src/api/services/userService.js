@@ -60,13 +60,13 @@ exports.userLogin = async (req, res) => {
 exports.getUser = async (req, res)=>{
     try {
         const tokenUser = req.user;
-        const user = User.findOne({
+        const user = await User.findOne({
             where:{
                 email: tokenUser.email
             },
             attributes: ["name", "email"],
         });
-        
+        console.table(user.dataValues);
         return res.status(200).json({user});
     }
     catch (Exception) {
