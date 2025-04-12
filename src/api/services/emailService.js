@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+// depois implementar login pelo google
+
 const tokenService = require('../services/tokenService');
 
 const transporter = nodemailer.createTransport({
@@ -25,9 +27,11 @@ exports.sendAuthEmail = async (req, res) => {
 
     html = html.replace('{{passcode}}', passcode).replace('{{time}}', expirationTime);
 
-    const info = await sendMail(to, html);
+    const authToken = tokenService.getEmailAuthToken(passcode);
+
+    const info = await sendMail(email, html);
     console.table(info);
-    return res.status(200).json({});
+    return res.status(200).json({authToken});
 
   }
   catch (err) {
@@ -38,7 +42,7 @@ exports.sendAuthEmail = async (req, res) => {
 
 function getPasscodeAndExpirationTime() {
 
-  const passcode = Math.floor(100000 + Math.random() * 900000); // Código de 6 dígitos
+  const passcode = Math.floor(100000 + Math.random() * 900000); 
   const expirationTime = new Date(Date.now() + 15 * 60000).toLocaleTimeString('pt-BR');
 
   return { passcode, expirationTime };
@@ -52,7 +56,6 @@ exports.sendResetEmail = (to, passcode, expirationTime) => {
   html = html.replace('{{passcode}}', passcode).replace('{{time}}', expirationTime);
   sendEmai(to, html);
 }
-
 
 async function sendEmai(to, html) {
 

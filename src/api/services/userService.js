@@ -40,7 +40,7 @@ exports.userLogin = async (req, res) => {
         
         if (!validPassword)
             return res.status(500).json({ message: 'Senha inválida!' });
-
+        
         const { token, refresh } = tokenService.getTokens(currentUser);
 
         return res.status(200).json({
@@ -49,7 +49,6 @@ exports.userLogin = async (req, res) => {
             refresh,
             user: {id: currentUser.id,name: currentUser.name, email: currentUser.email}
         });
-
     }
     catch (error) {
         console.log(error);
