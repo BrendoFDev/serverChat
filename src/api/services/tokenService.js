@@ -4,10 +4,12 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 const jwt = require('jsonwebtoken');
 const User = require('../model/userModel');
+const jwt15MinutesExpiration = 1000 * 60 * 15;
+const jwt7DaysExpiration = 1000 * 60 * 60 * 24 * 7;
 
 exports.verify = (req, res) => {
     try {
-        const token = getAuthorizationFromRequest(req);
+        const token = this.getAuthorizationFromRequest(req);
 
         if (!token) return res.status(401).json({ message: 'Acesso não autorizado' });
 
@@ -15,7 +17,7 @@ exports.verify = (req, res) => {
             (err, user) => {
                 if (err?.name == 'TokenExpiredError')
                     return res.status(401).json({ logged: false });
-               
+
                 return res.json({ logged: true, user });
             });
     }
@@ -27,16 +29,16 @@ exports.verify = (req, res) => {
 
 exports.refreshToken = async (req, res) => {
     try {
-        const refresh = getAuthorizationFromRequest(req);
+        const refresh = this.getAuthorizationFromRequest(req);
 
         jwt.verify(refresh, JWT_REFRESH_SECRET, async (err, user) => {
             if (err?.name == 'TokenExpiredError')
                 return res.status(401);
 
-            if (! await User.findOne({where:{email: user.email},attributes:['email','user']}))
+            if (! await User.findOne({ where: { email: user.email }, attributes: ['email', 'user'] }))
                 return res.status(401);
 
-            const token = jwt.sign(user, JWT_REFRESH_SECRET,{expiresIn: 1000 * 60 * 15 });
+            const token = jwt.sign(user, JWT_ACCESS_SECRET, { expiresIn: jwt15MinutesExpiration });
 
             return res.status(200).json({ token });
         });
@@ -47,21 +49,22 @@ exports.refreshToken = async (req, res) => {
     }
 }
 
-function getAuthorizationFromRequest(req) {
+exports.getAuthorizationFromRequest = (req) => {
     const { authorization } = req.headers;
     const token = authorization.split(" ")[1];
     return token;
 }
 
 
-exports.getTokens = (currentUser) =>{
+exports.getTokens = (currentUser) => {
+
 
     const token = jwt.sign(
         {
             id: currentUser.id,
             email: currentUser.email
         }, JWT_ACCESS_SECRET,
-        { expiresIn: 1000 * 60 * 15 });
+        { expiresIn: jwt15MinutesExpiration });
 
 
     const refresh = jwt.sign(
@@ -69,8 +72,14 @@ exports.getTokens = (currentUser) =>{
             id: currentUser.id,
             email: currentUser.email
         }, JWT_REFRESH_SECRET,
-        { expiresIn: 1000 * 60 * 60 * 24 * 7 });
+        { expiresIn: jwt7DaysExpiration });
 
     return { token, refresh };
+}
+
+exports.getEmailAuthToken = (passcode) => {
+    return jwt.sign({ passcode }, process.env.JWT_EMAIL_SECRET, {
+        expiresIn: jwt15MinutesExpiration
+    });
 }
 

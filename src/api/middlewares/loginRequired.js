@@ -1,12 +1,12 @@
 require('dotenv').config();
 const tokenService = require("../services/tokenService");
-const JWT_ACCESS_SECRET = process.env.JWT__ACCESS_SECRET;
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 const jwt = require('jsonwebtoken');
 
-exports.verify = (req, res, next) => {
+exports.AuthenticateToken = (req, res, next) => {
     try {
         const token = tokenService.getAuthorizationFromRequest(req);
-
+        
         if (!token) return res.status(401).json({ message: 'Acesso não autorizado' });
 
         jwt.verify(token, JWT_ACCESS_SECRET,

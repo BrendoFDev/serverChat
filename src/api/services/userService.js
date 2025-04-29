@@ -2,13 +2,14 @@ const bcrypt = require('bcryptjs');
 
 const tokenService = require('../services/tokenService')
 const User = require('../model/userModel');
+const Photo = require('../model/photoModel');
 const SALT_ROUNDS = 10;
 
 exports.createUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        if (await User.findOne({where:{email}, attributes:['email','name']}))
+        if (await User.findOne({ where: { email }, attributes: ['email', 'name'] }))
             return res.status(400).json({ message: `Já existe usuário cadastrado com o email ${email}` });
 
         const hashedPassword = await hashPassword(password);
@@ -32,24 +33,34 @@ exports.userLogin = async (req, res) => {
 
         const { email, password } = req.body;
 
-        const currentUser = await User.findOne({where:{ email }, attributes:['id','email','name','password']});
+        const currentUser = await User.findOne({ where: { email }, attributes: ['id', 'email', 'name', 'password'] });
+
         if (!currentUser)
             return res.status(500).json({ message: 'Email não cadastrado!' });
-        
+
         const validPassword = await bcrypt.compare(password, currentUser.password);
-        
+
         if (!validPassword)
             return res.status(500).json({ message: 'Senha inválida!' });
 
         const { token, refresh } = tokenService.getTokens(currentUser);
 
+        const photo = await Photo.findOne({
+            where: {
+                owner: currentUser.id
+            },
+            attributes: ["fileName"],
+        });
+
+        const fileName = photo?.fileName;
+
         return res.status(200).json({
             message: 'Login bem-sucedido',
             token,
             refresh,
-            user: {id: currentUser.id,name: currentUser.name, email: currentUser.email}
+            user: { id: currentUser.id, name: currentUser.name, email: currentUser.email },
+            photo: { fileName }
         });
-
     }
     catch (error) {
         console.log(error);
@@ -57,17 +68,17 @@ exports.userLogin = async (req, res) => {
     }
 }
 
-exports.getUser = async (req, res)=>{
+exports.getUser = async (req, res) => {
     try {
         const tokenUser = req.user;
-        const user = User.findOne({
-            where:{
+        const user = await User.findOne({
+            where: {
                 email: tokenUser.email
             },
             attributes: ["name", "email"],
         });
-        
-        return res.status(200).json({user});
+        console.table(user.dataValues);
+        return res.status(200).json({ user });
     }
     catch (Exception) {
         console.log(Exception)
