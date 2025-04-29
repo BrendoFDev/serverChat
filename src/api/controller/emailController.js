@@ -1,0 +1,4 @@
+exports.authEmail = (req,res) =>{
+   
+
+}
