@@ -22,12 +22,6 @@ const Photo = sequelize.define('Photo', {
     fileName: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    url: {
-        type: DataTypes.VIRTUAL,
-        get() {
-            return `http:localhost/${process.env.SERVER_PORT}/images/${this.getDataValue('filename')}`;
-        }
     }
 },
     {

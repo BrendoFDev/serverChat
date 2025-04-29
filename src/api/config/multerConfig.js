@@ -14,7 +14,8 @@ module.exports = {
   storage: multer.diskStorage({
 
     destination: (req, file, cb) => {
-      cb(null, resolve(__dirname, '..', '..', 'uploads', 'images'));
+      const isGroup = req.url.includes('/group');
+      cb(null, resolve(__dirname, '..', '..', 'uploads', 'images') + (isGroup ? '/group' : '/user'));
     },
 
     filename: (req, file, cb) => {

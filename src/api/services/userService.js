@@ -54,13 +54,12 @@ exports.userLogin = async (req, res) => {
 
         const fileName = photo?.fileName;
 
-        console.table(photo);
-
         return res.status(200).json({
             message: 'Login bem-sucedido',
             token,
             refresh,
-            user: { id: currentUser.id, name: currentUser.name, email: currentUser.email, photo: fileName }
+            user: { id: currentUser.id, name: currentUser.name, email: currentUser.email },
+            photo: { fileName }
         });
     }
     catch (error) {
