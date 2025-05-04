@@ -3,33 +3,33 @@ const { DataTypes } = require('sequelize');
 const User = require('./userModel');
 
 const Room = sequelize.define('room', {
-    id:{
-        autoIncrement:true,
-        primaryKey:true,
+    id: {
+        autoIncrement: true,
+        primaryKey: true,
         type: DataTypes.INTEGER,
     },
-    name:{
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    code:{
+    code: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    creationDate:{
+    creationDate: {
         type: DataTypes.DATE,
-        allowNull:false
+        allowNull: false
     },
     owner: {
         type: DataTypes.INTEGER,
-        allowNull:false,
+        allowNull: false,
     }
-}, 
-{
-    tableName:'room',
-    timestamps:false,
-});
+},
+    {
+        tableName: 'room',
+        timestamps: false,
+    });
 
-Room.belongsTo(User, { foreignKey:'owner', targetKey:'id' });
+Room.belongsTo(User, { foreignKey: 'owner', targetKey: 'id' });
 
 module.exports = Room;

@@ -13,14 +13,11 @@ exports.updatePhoto = async (req, res) => {
 
             if (error instanceof multer.MulterError) return res.status(400).json({ erros: [error.code] });
             else {
+                const user = req.user;
 
-                const { id } = req.user;
+                await processPhoto(user, req);
 
-                let userPhoto = await this.getPhotoByUserPk(id);
-
-                userPhoto = await processPhoto(userPhoto, req);
-
-                return res.status(201).json({ fileName: userPhoto.fileName });
+                return res.status(201).json(user);
             }
         });
     }
@@ -30,46 +27,41 @@ exports.updatePhoto = async (req, res) => {
     }
 }
 
-async function processPhoto(userPhoto, req) {
-    const { originalname, filename } = req.file;
+async function processPhoto(user, req) {
+    const { filename } = req.file;
     const { id } = req.user;
 
-    if (userPhoto) {
-        removeImage(userPhoto.fileName);
-
-        userPhoto.originalName = originalname
-        userPhoto.fileName = filename;
-
-        await userPhoto.save();
+    if (user?.photo) {
+        removeImage(user.photo.fileName);
+        await user.photo.update({ fileName: filename });
     }
     else {
-        userPhoto = await Photo.create({
-            originalName: originalname,
+        await Photo.create({
             fileName: filename,
             owner: id
         });
     }
-
-    return userPhoto;
+    return await User.findOne({ where: { id }, include: Photo });
 }
 
 exports.getPhotoByUserPk = (userId) => {
-    return Photo.findOne({
+    return User.findOne({
         where: {
-            owner: userId
+            id: userId
         },
-        include: User
+        include: Photo,
     });
 }
 
 exports.deletePhoto = async (req, res) => {
     try {
-        const userPhoto = await this.getPhotoByUserPk(req.user.id);
+        const user = await this.getPhotoByUserPk(req.user.id);
 
-        if (!userPhoto) return res.status(400).json({ erros: ['Usuário não possui foto'] });
+        if (!user?.photo) return res.status(400).json({ erros: ['Usuário não possui foto'] });
 
-        removeImage(userPhoto.filename);
-        await userPhoto.destroy();
+        removeImage(user?.photo?.filename);
+
+        await user?.destroy();
 
         return res.status(200).json({ message: 'Foto removida com sucesso' });
     }
@@ -80,13 +72,16 @@ exports.deletePhoto = async (req, res) => {
 }
 
 function removeImage(filename) {
-    const imagePath = path.resolve(__dirname, '..', '..', 'uploads', 'images', 'user', filename);
-    if (fs.existsSync(imagePath)) {
+    try {
+        const imagePath = path.resolve(__dirname, '..', '..', 'uploads', 'images', 'user', filename);
+        console.log(imagePath);
         fs.unlink(imagePath, (err) => {
             if (err) {
-                console.error(err);
-                throw Error('Erro ao remover imagem');
+                console.error('Arquivo não existe');
             };
         });
+    }
+    catch (err) {
+        console.log(err);
     }
 }

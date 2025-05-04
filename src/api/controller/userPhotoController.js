@@ -21,6 +21,5 @@ exports.deletePhoto = async (req, res) => {
         res.status(400).json({
             error: ['Erro interno do servidor ou aluno não existe']
         });
-
     }
 }

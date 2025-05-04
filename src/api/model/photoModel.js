@@ -15,10 +15,6 @@ const Photo = sequelize.define('Photo', {
         allowNull: false,
         unique: true
     },
-    originalName: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
     fileName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -29,5 +25,4 @@ const Photo = sequelize.define('Photo', {
         tableName: 'Photo'
     });
 
-Photo.belongsTo(User, { foreignKey: "owner", targetKey: "id" });
 module.exports = Photo;

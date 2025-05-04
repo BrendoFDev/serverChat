@@ -51,14 +51,15 @@ exports.refreshToken = async (req, res) => {
 
 exports.getAuthorizationFromRequest = (req) => {
     const { authorization } = req.headers;
+
+    if (!authorization) return null;
+
     const token = authorization.split(" ")[1];
     return token;
 }
 
 
 exports.getTokens = (currentUser) => {
-
-
     const token = jwt.sign(
         {
             id: currentUser.id,

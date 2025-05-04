@@ -1,5 +1,6 @@
 const sequelize = require('../database/db')
 const { DataTypes } = require('sequelize');
+const Photo = require('./photoModel');
 
 const User = sequelize.define('user', {
     id: {
@@ -30,5 +31,7 @@ const User = sequelize.define('user', {
         tableName: 'user',
         timestamps: true
     });
+
+User.hasOne(Photo, { foreignKey: 'owner', sourceKey: 'id' });
 
 module.exports = User;
