@@ -35,7 +35,10 @@ exports.userLogin = async (req, res) => {
 
         const { email, password } = req.body;
 
-        const currentUser = await User.findOne({ where: { email }, include: Photo, attributes: ['id', 'email', 'name', 'password'] });
+        const currentUser = await User.findOne({
+            where: { email }, include: { model: Photo, attributes: ["id", "fileName"] },
+            attributes: ['id', 'email', 'name', 'password']
+        });
 
         if (!currentUser)
             return res.status(500).json({ message: 'Email não cadastrado!' });
@@ -45,16 +48,11 @@ exports.userLogin = async (req, res) => {
         if (!validPassword)
             return res.status(500).json({ message: 'Senha inválida!' });
 
-        userData = { id: currentUser.id, name: currentUser.name, email: currentUser.email, photo: { fileName: currentUser.Photo.fileName } };
+        userData = { id: currentUser.id, name: currentUser.name, email: currentUser.email, Photo: { fileName: currentUser.Photo.fileName } };
 
         const { token, refresh } = tokenService.getTokens(userData);
 
-        return res.status(200).json({
-            message: 'Login bem-sucedido',
-            token,
-            refresh,
-            user: userData,
-        });
+        return res.status(200).json({ message: 'Login bem-sucedido', token, refresh, user: userData });
     }
     catch (error) {
         console.log(error);
@@ -76,5 +74,28 @@ exports.getUser = async (req, res) => {
     catch (Exception) {
         console.log(Exception)
         return res.status(500).json({ message: 'Erro ao criar usuário' });
+    }
+}
+
+exports.updateUser = async (req, res) => {
+    try {
+        const { name } = req.body;
+        const { id } = req.user;
+
+        const user = await User.findOne({
+            where: { id }, include: { model: Photo, attributes: ["id", "fileName"] },
+            attributes: ['id', 'email', 'name']
+        });
+
+        if (!user)
+            return res.status(400).json({ message: 'Usuário não encontrado' });
+
+        await user.update({ name });
+
+        return res.status(200).json({ message: "Usuário atualizado com sucesso", user });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Erro ao atualizar usuário' });
     }
 }

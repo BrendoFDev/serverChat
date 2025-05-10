@@ -17,7 +17,7 @@ const Photo = sequelize.define('Photo', {
     },
     fileName: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     }
 },
     {
