@@ -92,7 +92,9 @@ exports.updateUser = async (req, res) => {
 
         await user.update({ name });
 
-        return res.status(200).json({ message: "Usuário atualizado com sucesso", user });
+        userData = { id: user.id, name: user.name, email: user.email, Photo: { fileName: user.Photo.fileName } };
+
+        return res.status(200).json({ message: "Usuário atualizado com sucesso", user: { ...userData } });
     }
     catch (error) {
         console.log(error);

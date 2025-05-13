@@ -29,9 +29,8 @@ exports.sendAuthEmail = async (req, res) => {
 
     const authToken = tokenService.getEmailAuthToken(passcode);
 
-    const info = await sendMail(email, html);
-    console.table(info);
-    return res.status(200).json({authToken});
+    const info = await sendEmail(email, html);
+    return res.status(200).json({ authToken });
 
   }
   catch (err) {
@@ -42,7 +41,7 @@ exports.sendAuthEmail = async (req, res) => {
 
 function getPasscodeAndExpirationTime() {
 
-  const passcode = Math.floor(100000 + Math.random() * 900000); 
+  const passcode = Math.floor(100000 + Math.random() * 900000);
   const expirationTime = new Date(Date.now() + 15 * 60000).toLocaleTimeString('pt-BR');
 
   return { passcode, expirationTime };
@@ -57,7 +56,7 @@ exports.sendResetEmail = (to, passcode, expirationTime) => {
   sendEmai(to, html);
 }
 
-async function sendEmai(to, html) {
+async function sendEmail(to, html) {
 
   const mailOptions = {
     from: '"Live Together" brendo.dkry@gmail.com',

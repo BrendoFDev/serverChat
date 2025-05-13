@@ -1,45 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Email Verification</title>
-  </head>
-  <body style="margin: 0; padding: 0; font-family: system-ui, sans-serif, Arial; background-color: #f9f9f9">
-    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background: #ffffff; padding: 24px; border: 1px solid #eaeaea; border-radius: 8px">
-      <tr>
-        <td style="text-align: center">
-          <a href="[Website Link]" target="_blank" style="text-decoration: none; outline: none">
-            <img src="cid:logo.png" alt="logo" style="height: 32px; vertical-align: middle" height="32" />
-          </a>
-        </td>
-      </tr>
 
-      <tr>
-        <td style="padding-top: 20px; border-top: 1px solid #eaeaea; color: #333">
-          <p style="font-size: 16px; margin-bottom: 8px">
-            Olá, tudo certo?
-          </p>
-          <p style="font-size: 14px; margin-bottom: 20px">
-            Para continuar com a autenticação, utilize o código de verificação abaixo:
-          </p>
-          <p style="font-size: 24px; font-weight: bold; color: #000; margin: 24px 0">
-            {{passcode}}
-          </p>
-          <p style="font-size: 14px; color: #555">
-            Este código é válido por 15 minutos, até <strong>{{time}}</strong>.
-          </p>
-          <p style="font-size: 14px; color: #555; margin-top: 20px">
-            Não compartilhe este código com ninguém. Se você não solicitou este código, pode ignorar este e-mail com segurança.
-            <br />
-            <br />
-            A <strong>[Company Name]</strong> nunca vai te pedir esse código nem enviar links suspeitos. Fique esperto com golpes!
-          </p>
+<head>
+  <meta charset="UTF-8" />
+  <title>Email Verification</title>
+</head>
 
-          <p style="font-size: 14px; margin-top: 24px; color: #333">
-            Valeu por usar a <strong>[Company Name]</strong>! 🚀
-          </p>
-        </td>
-      </tr>
-    </table>
-  </body>
+<body style="margin: 0; padding: 0; font-family: system-ui, sans-serif, Arial; background-color: #f9f9f9">
+  <table width="100%" cellpadding="0" cellspacing="0"
+    style="max-width: 600px; margin: auto; background: #ffffff; padding: 24px; border: 1px solid #eaeaea; border-radius: 8px">
+    <tr>
+      <td style="padding-top: 20px; border-top: 1px solid #eaeaea; color: #333">
+        <p style="font-size: 16px; margin-bottom: 8px">
+          Olá, tudo certo?
+        </p>
+        <p style="font-size: 14px; margin-bottom: 20px">
+          Para continuar com a autenticação, utilize o código de verificação abaixo:
+        </p>
+        <p style="font-size: 24px; font-weight: bold; color: #000; margin: 24px 0">
+          {{passcode}}
+        </p>
+        <p style="font-size: 14px; color: #555">
+          Este código é válido por 15 minutos, até <strong>{{time}}</strong>.
+        </p>
+        <p style="font-size: 14px; color: #555; margin-top: 20px">
+          Não compartilhe este código com ninguém. Se você não solicitou este código, pode ignorar este e-mail com
+          segurança.
+          <br />
+          <br />
+          A <strong>Live Together</strong> nunca vai te pedir esse código nem enviar links suspeitos. Fique esperto com
+          golpes!
+        </p>
+
+        <p style="font-size: 14px; margin-top: 24px; color: #333">
+          Valeu por usar a <strong>Live Together</strong>! 🚀
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+
 </html>
